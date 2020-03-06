@@ -1,5 +1,5 @@
 {
-  "name": "sauladam/shipment-tracker",
+  "name": "bam-bam-bigelow/shipment-tracker",
   "description": "Parses tracking information for several carriers, like UPS, USPS, DHL and GLS by simply scraping the data. No need for any kind of API access.",
   "license": "MIT",
   "keywords": [
