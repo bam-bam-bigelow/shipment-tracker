@@ -118,7 +118,11 @@ class Fedex extends AbstractTracker
 		if (isset($contents['totalLbsWgt'])) {
 			$track->addAdditionalDetails('totalLbsWgt', $contents['totalLbsWgt']);
 		}
-		
+
+		if (isset($contents['isDelivered'])) {
+			$track->addAdditionalDetails('isDelivered', $contents['isDelivered']);
+		}
+
 		return $track->sortEvents();
 	}
 	
