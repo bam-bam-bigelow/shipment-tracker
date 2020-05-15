@@ -30,6 +30,6 @@ class GuzzleClient implements DataProviderInterface
      */
     public function get($url)
     {
-        return $this->client->get($url, ['timeout' => 5])->getBody()->getContents();
+        return $this->client->get($url, ['timeout' => 10])->getBody()->getContents();
     }
 }
