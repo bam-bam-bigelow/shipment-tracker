@@ -104,6 +104,14 @@ class UPS extends AbstractTracker
             }
         }
 
+        if (!empty($contents['trackDetails'][0]['scheduledDeliveryDate'])) {
+            $track->addAdditionalDetails('scheduledDeliveryDate', $contents['trackDetails'][0]['scheduledDeliveryDate']);
+        }
+
+        if (!empty($contents['trackDetails'][0]['additionalInformation']['weight'])) {
+            $track->addAdditionalDetails('weight', $contents['trackDetails'][0]['additionalInformation']['weight']);
+        }
+
         return $track->sortEvents();
     }
 
