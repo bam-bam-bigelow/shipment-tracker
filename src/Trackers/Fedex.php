@@ -10,7 +10,7 @@ use Sauladam\ShipmentTracker\Track;
 
 class Fedex extends AbstractTracker
 {
-    protected $serviceEndpoint = 'https://www.bing.com/packagetrackingv2?packNum={trackNumber}&carrier=FedEx';
+    protected $serviceEndpoint = 'https://www.bing.com/packagetrackingv2?packNum={trackNumber}&carrier=FedEx&cc=US';
 
     public function trackingUrl($trackingNumber, $language = null, $params = [])
     {
