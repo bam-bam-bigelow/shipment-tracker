@@ -175,6 +175,11 @@ class UPS extends AbstractTracker
      */
     protected function getDate($activity)
     {
+        // When label is ordered online and status is "label created" the date is not set,
+        // so we should use some default date (a week ago) to avoid messing up the sorting.
+        if (empty($activity['date'])) {
+            return Carbon::now()->subWeek();
+        }
         return Carbon::parse("{$activity['date']} {$activity['time']}");
     }
 
