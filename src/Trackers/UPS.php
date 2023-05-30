@@ -26,8 +26,10 @@ class UPS extends AbstractTracker
 
     /** @var string */
     protected $language = 'de';
-
-
+    
+    /**
+     * @throws \Exception
+     */
     protected function fetch($url)
     {
         if (empty(static::$cookies)) {
@@ -35,7 +37,7 @@ class UPS extends AbstractTracker
         }
 
         try {
-            $response = $this->getDataProvider()->client->post($this->serviceUrl(), [
+            $response = $this->getDataProvider()->post($this->serviceUrl(), [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'X-XSRF-TOKEN' => static::$cookies['X-XSRF-TOKEN-ST'],
@@ -49,11 +51,11 @@ class UPS extends AbstractTracker
                         $this->parcelNumber,
                     ],
                 ],
-            ])->getBody()->getContents();
+            ]);
 
             return json_decode($response, true);
-        } catch (\Exception $e) {
-            throw new \Exception("Could not fetch tracking data for [{$this->parcelNumber}].");
+        } catch (\Exception $exception) {
+            throw new \RuntimeException("Could not fetch tracking data for [{$this->parcelNumber}].");
         }
     }
 
