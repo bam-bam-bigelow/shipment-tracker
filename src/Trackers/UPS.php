@@ -26,14 +26,18 @@ class UPS extends AbstractTracker
 
     /** @var string */
     protected $language = 'de';
-    
+
     /**
      * @throws \Exception
      */
     protected function fetch($url)
     {
         if (empty(static::$cookies)) {
-            $this->getCookies();
+            try {
+                $this->getCookies();
+            } catch (\Exception $exception) {
+                throw new \RuntimeException('Could not fetch cookies.');
+            }
         }
 
         try {
@@ -62,14 +66,19 @@ class UPS extends AbstractTracker
 
     protected function getCookies()
     {
-        $this->getDataProvider()->client->request(
-            'GET', $this->trackingUrl($this->parcelNumber), [
-                'cookies' => $jar = new CookieJar,
-            ]
-        );
+        try {
+            $this->getDataProvider()->client->request(
+                'GET', $this->trackingUrl($this->parcelNumber), [
+                    'cookies' => $jar = new CookieJar,
+                    'timeout' => 5,
+                ]
+            );
 
-        foreach ($jar->toArray() as $cookie) {
-            static::$cookies[$cookie['Name']] = $cookie['Value'];
+            foreach ($jar->toArray() as $cookie) {
+                static::$cookies[$cookie['Name']] = $cookie['Value'];
+            }
+        } catch (\Exception $exception) {
+            throw new \RuntimeException("Could not fetch cookies for [{$this->parcelNumber}].");
         }
     }
 

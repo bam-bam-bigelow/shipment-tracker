@@ -165,6 +165,7 @@ class PostCH extends AbstractTracker
         $response = $this->getDataProvider()->client->request(
             'GET', $this->apiUserEndpoint, [
                 'cookies' => $jar = new CookieJar,
+                'timeout' => 5
             ]
         );
 
