@@ -10,7 +10,7 @@ use Sauladam\ShipmentTracker\Track;
 class UPS extends AbstractTracker
 {
     /** @var string */
-    protected $serviceEndpoint = 'https://www.ups.com/track/api/Track/GetStatus';
+    protected $serviceEndpoint = 'https://webapis.ups.com/track/api/Track/GetStatus';
 
     /** @var string */
     protected $descriptionLookupEndpoint = 'https://www.ups.com/track/api/WemsData/GetLookupData';
@@ -36,30 +36,38 @@ class UPS extends AbstractTracker
             try {
                 $this->getCookies();
             } catch (\Exception $exception) {
-                throw new \RuntimeException('Could not fetch cookies.');
+                throw new \RuntimeException('Could not fetch cookies.'
+                    . $exception->getMessage()
+                );
             }
         }
 
         try {
-            $response = $this->getDataProvider()->post($this->serviceUrl(), [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'X-XSRF-TOKEN' => static::$cookies['X-XSRF-TOKEN-ST'],
-                    'Cookie' => implode(';', array_map(function ($name) {
-                        return $name . '=' . static::$cookies[$name];
-                    }, array_keys(static::$cookies))),
-                ],
-                'json' => [
-                    'Locale' => $this->getLanguageQueryParam($this->language),
-                    'TrackingNumber' => [
-                        $this->parcelNumber,
+            $response = $this->getDataProvider()->client->request('POST',
+                $this->serviceUrl()
+                , [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'X-XSRF-TOKEN' => static::$cookies['X-XSRF-TOKEN-ST'],
+                        'Cookie' => implode(';', array_map(function ($name) {
+                            return $name . '=' . static::$cookies[$name];
+                        }, array_keys(static::$cookies))),
                     ],
-                ],
-            ]);
+                    'json' => [
+                        'Locale' => $this->getLanguageQueryParam($this->language),
+                        'TrackingNumber' => [
+                            $this->parcelNumber,
+                        ],
+                    ],
+                ]);
 
-            return json_decode($response, true);
+            $responseBody = $response->getBody()->getContents();
+            return json_decode($responseBody, true);
         } catch (\Exception $exception) {
-            throw new \RuntimeException("Could not fetch tracking data for [{$this->parcelNumber}].");
+            throw new \RuntimeException(
+                "Could not fetch tracking data for [{$this->parcelNumber}]."
+                . $exception->getMessage()
+            );
         }
     }
 
@@ -78,7 +86,10 @@ class UPS extends AbstractTracker
                 static::$cookies[$cookie['Name']] = $cookie['Value'];
             }
         } catch (\Exception $exception) {
-            throw new \RuntimeException("Could not fetch cookies for [{$this->parcelNumber}].");
+            throw new \RuntimeException(
+                "Could not fetch cookies for [{$this->parcelNumber}]. "
+                . $exception->getMessage()
+            );
         }
     }
 

@@ -1,6 +1,7 @@
 # Common files types
 *.log
 *.bak
+*.cache
 
 # Development environment
 Guardfile

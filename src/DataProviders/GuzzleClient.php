@@ -19,7 +19,18 @@ class GuzzleClient implements DataProviderInterface
      */
     public function __construct()
     {
-        $this->client = new Client();
+        $config = [];
+        $config['headers'] = [
+            'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0',
+            'TE' => 'trailers',
+            'Sec-Fetch-Dest' => 'empty',
+            'Accept-Encoding' => 'gzip, deflate, br',
+            'Accept-Language' => 'en-US,en;q=0.8',
+            'Sec-Fetch-Mode' => 'cors',
+            'Sec-Fetch-Site' => 'same-site',
+            'Accept' => 'application/json'
+        ];
+        $this->client = new Client($config);
     }
 
 
