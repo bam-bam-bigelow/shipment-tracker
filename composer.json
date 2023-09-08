@@ -26,6 +26,7 @@
     "ext-dom": "*"
   },
   "require-dev": {
+    "roave/security-advisories": "dev-latest",
     "phpunit/phpunit": "~9.4.0"
   },
   "autoload": {
@@ -35,8 +36,6 @@
   },
   "autoload-dev": {
     "files": [
-      "tests/TestCase.php",
-      "tests/FileMapperDataProvider.php"
     ]
   }
 }
