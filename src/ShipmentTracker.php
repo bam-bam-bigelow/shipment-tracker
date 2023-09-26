@@ -22,6 +22,13 @@ class ShipmentTracker
     protected static $customizeTrackerClasses = [];
 
     /**
+     * Proxy URI
+     *
+     * @var ?string
+     */
+    private static $proxyUri = null;
+
+    /**
      * Get the tracker for the given carrier name.
      *
      * @param string                $carrier
@@ -76,8 +83,8 @@ class ShipmentTracker
     {
         $registry = new Registry;
 
-        $registry->register('guzzle', new GuzzleClient);
-        $registry->register('php', new PhpClient);
+        $registry->register('guzzle', new GuzzleClient(['proxy'=>static::$proxyUri]));
+        $registry->register('php', new PhpClient());
 
         if ($customProvider) {
             $registry->register('custom', $customProvider);
@@ -96,5 +103,9 @@ class ShipmentTracker
     protected static function isValidCarrier($carrier)
     {
         return class_exists(self::$carriersNamespace . '\\' . $carrier);
+    }
+
+    public static function setProxyUri(string $uri): void {
+        self::$proxyUri = $uri;
     }
 }

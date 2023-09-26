@@ -17,7 +17,7 @@ class GuzzleClient implements DataProviderInterface
     /**
      * GuzzleClient constructor.
      */
-    public function __construct()
+    public function __construct(array $customSettings = [])
     {
         $config = [];
         $config['headers'] = [
@@ -30,6 +30,11 @@ class GuzzleClient implements DataProviderInterface
             'Sec-Fetch-Site' => 'same-site',
             'Accept' => 'application/json'
         ];
+
+        if(!empty($customSettings['proxy'])) {
+            $config['proxy'] = $customSettings['proxy'];
+        }
+
         $this->client = new Client($config);
     }
 

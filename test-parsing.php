@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 use Carbon\Carbon;
 use Sauladam\ShipmentTracker\ShipmentTracker;
@@ -34,6 +35,7 @@ $trackNumber = $argv[4];
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+ShipmentTracker::setProxyUri('socks5://1:2@1.1.1.1:123');
 $tracker = ShipmentTracker::get($carrier);
 $track = $tracker->track($trackNumber, 'en');
 

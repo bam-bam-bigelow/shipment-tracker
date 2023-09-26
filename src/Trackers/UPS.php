@@ -78,7 +78,7 @@ class UPS extends AbstractTracker
             $this->getDataProvider()->client->request(
                 'GET', $this->trackingUrl($this->parcelNumber), [
                     'cookies' => $jar = new CookieJar,
-                    'timeout' => 5,
+                    'timeout' => 15,
                 ]
             );
 
@@ -104,7 +104,16 @@ class UPS extends AbstractTracker
     {
         $track = new Track;
 
-        foreach ($contents['trackDetails'][0]['shipmentProgressActivities'] as $progressActivity) {
+        if (!empty($contents['trackDetails'][0]['errorText'])) {
+            $track->addEvent(Event::fromArray([
+                'description' => $contents['trackDetails'][0]['errorText'],
+                'status' => Track::STATUS_UNKNOWN,
+            ]));
+        }
+
+        $progressActivities = $contents['trackDetails'][0]['shipmentProgressActivities'] ?? [];
+
+        foreach ($progressActivities as $progressActivity) {
             if (null === $progressActivity['activityScan']) {
                 continue;
             }
