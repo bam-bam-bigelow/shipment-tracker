@@ -27,6 +27,8 @@ class UPS extends AbstractTracker
     /** @var string */
     protected $language = 'de';
 
+	private const TIMEOUT = 10;
+
     /**
      * @throws \Exception
      */
@@ -59,6 +61,9 @@ class UPS extends AbstractTracker
                             $this->parcelNumber,
                         ],
                     ],
+                    'timeout' => self::TIMEOUT,
+                    'read_timeout' => self::TIMEOUT,
+                    'connect_timeout' => self::TIMEOUT,
                 ]);
 
             $responseBody = $response->getBody()->getContents();
@@ -78,7 +83,9 @@ class UPS extends AbstractTracker
             $this->getDataProvider()->client->request(
                 'GET', $this->trackingUrl($this->parcelNumber), [
                     'cookies' => $jar = new CookieJar,
-                    'timeout' => 15,
+                    'timeout' => self::TIMEOUT,
+                    'read_timeout' => self::TIMEOUT,
+                    'connect_timeout' => self::TIMEOUT,
                 ]
             );
 
