@@ -124,6 +124,27 @@ class UPS extends AbstractTracker
 	protected function buildResponse($contents) {
 		$track = new Track();
 
+		// They changed est delivery date format
+		// Example:
+		// array(2) {
+		//  'monthCMSKey' =>
+		//  string(13) "cms.stapp.jun"
+		//  'dayNum' =>
+		//  string(2) "26"
+		//}
+		// where dayNum is day of the month
+		// and monthCMSKey is month name in English (last part, like jun)
+		if (!empty($contents['trackDetails'][0]['scheduledDeliveryDateDetail'])) {
+			$estDeliveryDt = $contents['trackDetails'][0]['scheduledDeliveryDateDetail'];
+			// parse month (last part of .)
+			$estDeliveryDt['monthCMSKey'] = explode('.', $estDeliveryDt['monthCMSKey'])[2];
+			$scheduledDeliveryDate = Carbon::parse($estDeliveryDt['dayNum'] . ' ' . $estDeliveryDt['monthCMSKey']);
+			$track->addAdditionalDetails(
+				'scheduledDeliveryDate',
+				json_encode($scheduledDeliveryDate->format('Y-m-d'))
+			);
+		}
+
 		if (!empty($contents['trackDetails'][0]['errorText'])) {
 			$track->addEvent(Event::fromArray([
 				                                  'description' => $contents['trackDetails'][0]['errorText'],
