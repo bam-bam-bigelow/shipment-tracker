@@ -141,7 +141,7 @@ class UPS extends AbstractTracker
 			$scheduledDeliveryDate = Carbon::parse($estDeliveryDt['dayNum'] . ' ' . $estDeliveryDt['monthCMSKey']);
 			$track->addAdditionalDetails(
 				'scheduledDeliveryDate',
-				json_encode($scheduledDeliveryDate->format('Y-m-d'))
+				$scheduledDeliveryDate->format('Y-m-d')
 			);
 		}
 
